@@ -1,7 +1,7 @@
 <script>
 	import { getContext, onMount } from 'svelte';
 
-	// const editor = getContext('editor');
+	const editor = getContext('editor');
 
 	let canvas = null;
 	let color = null;
@@ -48,5 +48,5 @@
 		on:mousedown={activatePainting}
 		on:mouseup={deactivatePainting}
 		on:mousemove={paint}
-	></canvas>
+	/>
 </section>

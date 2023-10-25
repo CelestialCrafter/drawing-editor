@@ -1,5 +1,6 @@
 <script>
-	import { setContext, writable } from 'svelte';
+	import { setContext } from 'svelte';
+	import { writable } from 'svelte/store';
 
 	const editor = writable();
 

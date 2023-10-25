@@ -1,7 +1,3 @@
-<script>
-	import Editor from '$lib/components/Editor.svelte';
-</script>
-
 <main>
-	<Editor />
+	<p class="text-red-400">bleh :3</p>
 </main>
