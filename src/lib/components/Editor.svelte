@@ -1,6 +1,7 @@
 <script>
 	import { getContext, onMount } from 'svelte';
-	import { Trash } from 'svelte-heros-v2';
+
+	// const editor = getContext('editor');
 
 	let canvas = null;
 	let color = null;
