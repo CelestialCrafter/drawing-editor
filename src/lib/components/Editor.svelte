@@ -31,20 +31,21 @@
 					pixelSize - spacing * 2,
 					pixelSize - spacing * 2
 				);
-				ctx.fill();
 			}
 		}
+
+		ctx.fill();
 	});
 
 	const activatePainting = () => {
 		painting = true;
 		ctx.strokeStyle = color.value;
+		ctx.beginPath();
 	};
 
 	const deactivatePainting = () => {
 		painting = false;
 		ctx.stroke();
-		ctx.beginPath();
 	};
 
 	const paint = event => {
