@@ -1,7 +1,1 @@
-<script>
-	import Editor from '$lib/components/Editor.svelte';
-	import Blob from '../lib/components/Blob.svelte';
-</script>
-
-<Editor />
-<Blob />
+<a class="text-3xl text-blue-400" href="/editor">go to editor</a>
