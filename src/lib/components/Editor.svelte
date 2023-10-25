@@ -2,30 +2,41 @@
 	import { onMount } from 'svelte';
 	import { Trash } from 'svelte-heros-v2';
 
-	const editor = Array(32).fill(Array(32).fill(1));
+	const editor = {
+		colorMap: {
+			0: 'clear',
+			1: '#E9BCD1',
+			2: '#34E2E2',
+			3: '#FFFFFF'
+		},
+		board: Array(32).fill(
+			Array(32)
+				.fill(1)
+				.map((cell, i) => (i % 3) + 1)
+		)
+	};
 
-	let canvas = null;
-	let color = null;
+	let canvas;
+	let color;
+	let pixelSize;
+	const spacing = 1;
+
 	let painting = false;
 
 	let ctx;
 
-	onMount(() => {
-		ctx = canvas?.getContext('2d');
+	const paintEditor = () => {
+		const { board } = editor;
 
-		canvas.width = canvas.offsetWidth;
-		canvas.height = canvas.offsetHeight;
-
-		ctx.strokeStyle = color.value;
-
-		const pixelSize = canvas.width / editor.length;
-		const spacing = 1;
-		for (let i = 0; i < editor.length; i++) {
-			const row = editor[i];
+		for (let i = 0; i < board.length; i++) {
+			const row = board[i];
 			for (let j = 0; j < row.length; j++) {
-				const color = row[j];
-				console.log(i, j, color);
-				ctx.rect(
+				const cellColor = row[j];
+				let type = 'fill';
+				if (cellColor === 'clear') type = cellColor;
+				else ctx.fillStyle = editor.colorMap[cellColor];
+
+				ctx[`${type}Rect`](
 					i * pixelSize - spacing,
 					j * pixelSize - spacing,
 					pixelSize - spacing * 2,
@@ -33,27 +44,36 @@
 				);
 			}
 		}
+	};
 
-		ctx.fill();
+	onMount(() => {
+		ctx = canvas?.getContext('2d');
+
+		canvas.width = canvas.offsetWidth;
+		canvas.height = canvas.offsetHeight;
+		pixelSize = canvas.width / editor.board.length;
+
+		paintEditor();
 	});
 
 	const activatePainting = () => {
 		painting = true;
-		ctx.strokeStyle = color.value;
-		ctx.beginPath();
+		ctx.fillStyle = color.value;
 	};
 
-	const deactivatePainting = () => {
-		painting = false;
-		ctx.stroke();
-	};
+	const deactivatePainting = () => (painting = false);
 
 	const paint = event => {
 		if (!painting) return;
-		ctx.lineWidth = 5;
-		ctx.lineCap = 'round';
-		ctx.lineTo(event.offsetX, event.offsetY);
-		ctx.stroke();
+		const startX = event.offsetX - (event.offsetX % pixelSize);
+		const startY = event.offsetY - (event.offsetY % pixelSize);
+
+		ctx.fillRect(
+			startX - spacing,
+			startY - spacing,
+			pixelSize - spacing * 2,
+			pixelSize - spacing * 2
+		);
 	};
 </script>
 
@@ -71,7 +91,7 @@
 				class="editor-button mt-auto bg-white
 				transition-all duration-300
 				hover:border-4 hover:bg-red-400 hover:text-white"
-				on:click={() => ctx?.clearRect(0, 0, canvas.width, canvas.height)}
+				on:click={() => ctx && (ctx.clearRect(0, 0, canvas.width, canvas.height) || paintEditor())}
 			>
 				<Trash size="30" />
 			</button>
