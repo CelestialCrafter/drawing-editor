@@ -29,5 +29,8 @@
 		"tailwindcss": "^3.3.4",
 		"vite": "^4.4.2"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"svelte-heros-v2": "^0.10.12"
+	}
 }

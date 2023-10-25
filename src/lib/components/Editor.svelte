@@ -1,7 +1,6 @@
 <script>
 	import { getContext, onMount } from 'svelte';
-
-	// const editor = getContext('editor');
+	import { Trash } from 'svelte-heros-v2';
 
 	let canvas = null;
 	let color = null;
@@ -36,17 +35,18 @@
 	};
 </script>
 
-<section class="flex h-full">
-	<div class="flex-1">
-		<input type="color" bind:this={color} />
-		<button on:click={() => ctx?.clearRect(0, 0, canvas.width, canvas.height)}>Clear</button>
+<main class="flex w-screen h-screen justify-center items-center flex-row">
+	<div class="flex flex-row gap-3"> <!-- okay this is a dirty css workaround but itll do -->
+		<div id="controls" class="w-fit shadow-2xl bg-white/30 p-3 rounded-2xl flex flex-col gap-3">
+			<input type="color" id="color" bind:this={color} class="w-[80px] h-[80px] aspect-square rounded-lg m-0 border-none"/>
+			<button class="editor-button bg-white mt-auto transition-all hover:text-white hover:border-4 hover:bg-red-400"><Trash size="30"/></button>
+		</div>
+		<canvas bind:this={canvas} class="shadow-2xl w-[40vw] h-[vh] aspect-square rounded-2xl bg-white"></canvas>
 	</div>
+</main>
 
-	<canvas
-		class="h-full w-full"
-		bind:this={canvas}
-		on:mousedown={activatePainting}
-		on:mouseup={deactivatePainting}
-		on:mousemove={paint}
-	></canvas>
-</section>
+<style lang="postcss">
+	.editor-button {
+		@apply w-[80px] h-[80px] aspect-square rounded-2xl shadow-lg border-gray-100 flex justify-center items-center
+	}
+</style>
