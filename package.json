@@ -5,7 +5,9 @@
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"lint": "eslint .",
+		"format": "prettier --write ."
 	},
 	"devDependencies": {
 		"eslint": "^8.28.0",
