@@ -3,4 +3,7 @@
 @tailwind utilities;
 
 @layer base {
+	main {
+		@apply h-screen w-screen;
+	}
 }
