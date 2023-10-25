@@ -1,7 +1,8 @@
 <script>
 	import { getContext, onMount } from 'svelte';
+	import { Trash } from 'svelte-heros-v2';
 
-	// const editor = getContext('editor');
+	const editor = getContext('editor');
 
 	let canvas = null;
 	let color = null;
@@ -36,18 +37,35 @@
 	};
 </script>
 
-<main class="flex w-screen h-screen justify-center items-center flex-row">
-	<div class="flex flex-row gap-3"> <!-- okay this is a dirty css workaround but itll do -->
-		<div id="controls" class="w-fit shadow-2xl bg-white/30 p-3 rounded-2xl flex flex-col gap-3">
-			<input type="color" id="color" bind:this={color} class="w-[80px] h-[80px] aspect-square rounded-lg m-0 border-none"/>
-			<button class="editor-button bg-white mt-auto transition-all hover:text-white hover:border-4 hover:bg-red-400"><Trash size="30"/></button>
+<main class="flex h-screen w-screen flex-row items-center justify-center">
+	<div class="flex flex-row gap-3">
+		<!-- okay this is a dirty css workaround but itll do -->
+		<div id="controls" class="flex w-fit flex-col gap-3 rounded-2xl bg-white/30 p-3 shadow-2xl">
+			<input
+				type="color"
+				id="color"
+				bind:this={color}
+				class="m-0 aspect-square h-[80px] w-[80px] rounded-lg border-none"
+			/>
+			<button
+				class="editor-button mt-auto bg-white transition-all hover:border-4 hover:bg-red-400 hover:text-white"
+				on:click={() => ctx?.clearRect(0, 0, canvas.width, canvas.height)}
+			>
+				<Trash size="30" />
+			</button>
 		</div>
-		<canvas bind:this={canvas} class="shadow-2xl w-[40vw] h-[vh] aspect-square rounded-2xl bg-white"></canvas>
+		<canvas
+			bind:this={canvas}
+			on:mousedown={activatePainting}
+			on:mouseup={deactivatePainting}
+			on:mousemove={paint}
+			class="aspect-square h-[vh] w-[40vw] rounded-2xl bg-white shadow-2xl"
+		></canvas>
 	</div>
 </main>
 
 <style lang="postcss">
 	.editor-button {
-		@apply w-[80px] h-[80px] aspect-square rounded-2xl shadow-lg border-gray-100 flex justify-center items-center
+		@apply flex aspect-square h-[80px] w-[80px] items-center justify-center rounded-2xl border-gray-100 shadow-lg;
 	}
 </style>
