@@ -1,8 +1,8 @@
 <script>
-	import { getContext, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { Trash } from 'svelte-heros-v2';
 
-	const editor = getContext('editor');
+	const editor = Array(32).fill(Array(32).fill(1));
 
 	let canvas = null;
 	let color = null;
@@ -15,6 +15,25 @@
 
 		canvas.width = canvas.offsetWidth;
 		canvas.height = canvas.offsetHeight;
+
+		ctx.strokeStyle = color.value;
+
+		const pixelSize = canvas.width / editor.length;
+		const spacing = 1;
+		for (let i = 0; i < editor.length; i++) {
+			const row = editor[i];
+			for (let j = 0; j < row.length; j++) {
+				const color = row[j];
+				console.log(i, j, color);
+				ctx.rect(
+					i * pixelSize - spacing,
+					j * pixelSize - spacing,
+					pixelSize - spacing * 2,
+					pixelSize - spacing * 2
+				);
+				ctx.fill();
+			}
+		}
 	});
 
 	const activatePainting = () => {
