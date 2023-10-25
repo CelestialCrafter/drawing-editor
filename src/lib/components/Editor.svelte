@@ -1,13 +1,13 @@
 <script>
 	import { getContext, onMount } from 'svelte';
 
-	const editor = getContext('editor');
+	// const editor = getContext('editor');
 
 	let canvas = null;
 	let color = null;
 	let ctx = null;
 
-	canvas.getContext('2d');
+	// let ctx = canvas.getContext('2d');
 	let painting = false;
 </script>
 

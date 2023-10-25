@@ -1,5 +1,5 @@
 <script>
-	import Editor from '$lib/components/Editor.js';
+	import Editor from '$lib/components/Editor.svelte';
 </script>
 
 <Editor />
