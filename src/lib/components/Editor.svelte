@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import { Trash } from 'svelte-heros-v2';
+	import { LZMA as lzma } from 'lzma/src/lzma_worker-min';
 
 	const size = 32;
 	const spacing = 1;
@@ -29,7 +30,11 @@
 		return editor;
 	};
 
-	let editor = generateEditor();
+	const exportEditor = editor => JSON.stringify(lzma.compress(JSON.stringify(editor), 6));
+	const importEditor = compressed => JSON.parse(lzma.decompress(JSON.parse(compressed)));
+
+	// let currentEditor = generateEditor();
+	let currentEditor = generateEditor();
 
 	let canvas;
 	let color;
@@ -38,7 +43,7 @@
 	let ctx;
 
 	const paintEditor = () => {
-		const { board } = editor;
+		const { board } = currentEditor;
 
 		for (let i = 0; i < board.length; i++) {
 			const row = board[i];
@@ -46,7 +51,7 @@
 				const cellColorId = row[j];
 				let type = 'fill';
 				if (cellColorId === 'clear') type = cellColorId;
-				else ctx.fillStyle = editor.idToColor[cellColorId];
+				else ctx.fillStyle = currentEditor.idToColor[cellColorId];
 
 				ctx[`${type}Rect`](
 					i * pixelSize - spacing,
@@ -63,8 +68,10 @@
 
 		canvas.width = canvas.offsetWidth;
 		canvas.height = canvas.offsetHeight;
-		pixelSize = canvas.width / editor.board.length;
+		pixelSize = canvas.width / currentEditor.board.length;
 
+		const editorAutoSave = localStorage.getItem('editorAutoSave');
+		if (editorAutoSave) currentEditor = importEditor(editorAutoSave);
 		paintEditor();
 	});
 
@@ -73,24 +80,40 @@
 		const selectedColor = color.value;
 		ctx.fillStyle = selectedColor;
 
-		if (!editor.colorToId[selectedColor]) {
-			let previousId = Object.keys(editor.idToColor);
+		if (!currentEditor.colorToId[selectedColor]) {
+			let previousId = Object.keys(currentEditor.idToColor);
 			previousId = previousId[previousId.length - 1];
 			const nextId = Number(previousId) + 1;
 
-			editor.idToColor[nextId] = selectedColor;
-			editor.colorToId[selectedColor] = nextId;
+			currentEditor.idToColor[nextId] = selectedColor;
+			currentEditor.colorToId[selectedColor] = nextId;
 		}
 	};
 
-	const deactivatePainting = () => (painting = false);
+	const debounce = (fn, timeout) => {
+		let timer;
+		return (...args) => {
+			clearTimeout(timer);
+			timer = setTimeout(() => fn.apply(this, args), timeout);
+		};
+	};
+
+	const autoSave = debounce(
+		() => localStorage.setItem('editorAutoSave', exportEditor(currentEditor)),
+		750
+	);
+	const deactivatePainting = () => {
+		painting = false;
+		autoSave();
+	};
 
 	const paint = event => {
 		if (!painting) return;
 		const startX = event.offsetX - (event.offsetX % pixelSize);
 		const startY = event.offsetY - (event.offsetY % pixelSize);
 
-		editor.board[startX / pixelSize][startY / pixelSize] = editor.colorToId[ctx.fillStyle];
+		currentEditor.board[startX / pixelSize][startY / pixelSize] =
+			currentEditor.colorToId[ctx.fillStyle];
 
 		ctx.fillRect(
 			startX - spacing,
@@ -103,7 +126,7 @@
 	const clearCanvas = () => {
 		if (!ctx) return;
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		editor = generateEditor();
+		currentEditor = generateEditor();
 		paintEditor();
 	};
 </script>

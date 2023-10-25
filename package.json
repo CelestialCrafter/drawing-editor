@@ -31,6 +31,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"lzma": "^2.3.2",
 		"svelte-heros-v2": "^0.10.12"
 	}
 }
