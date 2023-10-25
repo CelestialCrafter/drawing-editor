@@ -45,10 +45,12 @@
 				type="color"
 				id="color"
 				bind:this={color}
-				class="m-0 aspect-square h-[80px] w-[80px] rounded-lg border-none"
+				class="m-0 aspect-square h-[80px] w-[80px]"
 			/>
 			<button
-				class="editor-button mt-auto bg-white transition-all hover:border-4 hover:bg-red-400 hover:text-white"
+				class="editor-button mt-auto bg-white
+				transition-all duration-300
+				hover:border-4 hover:bg-red-400 hover:text-white"
 				on:click={() => ctx?.clearRect(0, 0, canvas.width, canvas.height)}
 			>
 				<Trash size="30" />
@@ -64,7 +66,18 @@
 	</div>
 </main>
 
-<style lang="postcss">
+<style>
+	input[type='color'] {
+		&::-webkit-color-swatch,
+		&::-webkit-color-swatch-wrapper,
+		& {
+			@apply overflow-hidden rounded-2xl border-none p-0;
+		}
+
+		&::-moz-color-swatch {
+			@apply border-none;
+		}
+	}
 	.editor-button {
 		@apply flex aspect-square h-[80px] w-[80px] items-center justify-center rounded-2xl border-gray-100 shadow-lg;
 	}
