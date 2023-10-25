@@ -2,27 +2,39 @@
 	import { onMount } from 'svelte';
 	import { Trash } from 'svelte-heros-v2';
 
-	const editor = {
-		colorMap: {
-			0: 'clear',
-			1: '#E9BCD1',
-			2: '#34E2E2',
-			3: '#FFFFFF'
-		},
-		board: Array(32).fill(
-			Array(32)
-				.fill(1)
-				.map((cell, i) => (i % 3) + 1)
-		)
+	const size = 32;
+	const spacing = 1;
+
+	const generateEditor = () => {
+		const editor = {
+			idToColor: {
+				0: 'clear',
+				1: '#E9BCD1',
+				2: '#34E2E2',
+				3: '#FFFFFF'
+			},
+			board: Array(size)
+				.fill(null)
+				.map(() =>
+					Array(size)
+						.fill(null)
+						.map((cell, i) => (i % 3) + 1)
+				)
+		};
+
+		editor.colorToId = Object.fromEntries(
+			Object.entries(editor.idToColor).map(([key, value]) => [value, key])
+		);
+
+		return editor;
 	};
+
+	let editor = generateEditor();
 
 	let canvas;
 	let color;
 	let pixelSize;
-	const spacing = 1;
-
 	let painting = false;
-
 	let ctx;
 
 	const paintEditor = () => {
@@ -31,10 +43,10 @@
 		for (let i = 0; i < board.length; i++) {
 			const row = board[i];
 			for (let j = 0; j < row.length; j++) {
-				const cellColor = row[j];
+				const cellColorId = row[j];
 				let type = 'fill';
-				if (cellColor === 'clear') type = cellColor;
-				else ctx.fillStyle = editor.colorMap[cellColor];
+				if (cellColorId === 'clear') type = cellColorId;
+				else ctx.fillStyle = editor.idToColor[cellColorId];
 
 				ctx[`${type}Rect`](
 					i * pixelSize - spacing,
@@ -58,7 +70,17 @@
 
 	const activatePainting = () => {
 		painting = true;
-		ctx.fillStyle = color.value;
+		const selectedColor = color.value;
+		ctx.fillStyle = selectedColor;
+
+		if (!editor.colorToId[selectedColor]) {
+			let previousId = Object.keys(editor.idToColor);
+			previousId = previousId[previousId.length - 1];
+			const nextId = Number(previousId) + 1;
+
+			editor.idToColor[nextId] = selectedColor;
+			editor.colorToId[selectedColor] = nextId;
+		}
 	};
 
 	const deactivatePainting = () => (painting = false);
@@ -68,12 +90,21 @@
 		const startX = event.offsetX - (event.offsetX % pixelSize);
 		const startY = event.offsetY - (event.offsetY % pixelSize);
 
+		editor.board[startX / pixelSize][startY / pixelSize] = editor.colorToId[ctx.fillStyle];
+
 		ctx.fillRect(
 			startX - spacing,
 			startY - spacing,
 			pixelSize - spacing * 2,
 			pixelSize - spacing * 2
 		);
+	};
+
+	const clearCanvas = () => {
+		if (!ctx) return;
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		editor = generateEditor();
+		paintEditor();
 	};
 </script>
 
@@ -91,7 +122,7 @@
 				class="editor-button mt-auto bg-white
 				transition-all duration-300
 				hover:border-4 hover:bg-red-400 hover:text-white"
-				on:click={() => ctx && (ctx.clearRect(0, 0, canvas.width, canvas.height) || paintEditor())}
+				on:click={clearCanvas}
 			>
 				<Trash size="30" />
 			</button>
