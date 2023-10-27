@@ -31,7 +31,7 @@
 					pixelSize - spacing * 2,
 					pixelSize - spacing * 2
 				);
-				ctx.fill();
+				// ctx.fill();
 			}
 		}
 	});
@@ -64,7 +64,7 @@
 				type="color"
 				id="color"
 				bind:this={color}
-				class="m-0 aspect-square h-[80px] w-[80px]"
+				class="m-0 aspect-square h-[5vw] w-[5vw]"
 			/>
 			<button
 				class="editor-button mt-auto bg-white
@@ -90,7 +90,7 @@
 		&::-webkit-color-swatch,
 		&::-webkit-color-swatch-wrapper,
 		& {
-			@apply overflow-hidden rounded-2xl border-none p-0;
+			@apply overflow-hidden rounded-2xl border-none p-0 shadow-lg;
 		}
 
 		&::-moz-color-swatch {
@@ -98,6 +98,6 @@
 		}
 	}
 	.editor-button {
-		@apply flex aspect-square h-[80px] w-[80px] items-center justify-center rounded-2xl border-gray-100 shadow-lg;
+		@apply flex aspect-square h-[5vw] w-[5vw] items-center justify-center rounded-2xl border-gray-100 shadow-lg;
 	}
 </style>
