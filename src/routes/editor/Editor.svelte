@@ -1,13 +1,13 @@
 <script>
 	import { onMount } from 'svelte';
 	import { LZMA as lzma } from 'lzma/src/lzma_worker-min';
-	import { draw } from 'svelte/transition';
 
 	export let canvas;
 	export let color;
-	export let drawingMode = true;
+	export let drawingMode = 0;
 
 	const size = 32;
+	// @TODO add padding @CelestialCrafter
 	const spacing = 1;
 
 	const generateEditor = () => {
@@ -34,7 +34,7 @@
 		return editor;
 	};
 
-	let currentEditor = generateEditor();
+	export let currentEditor = generateEditor();
 
 	let pixelSize;
 	let painting = false;
@@ -105,13 +105,15 @@
 		if (!painting) return;
 		const x = getBoardPosition(offsetX);
 		const y = getBoardPosition(offsetY);
+		if (drawingMode === 2)
+			return (color.value = currentEditor.idToColor[currentEditor.board[x][y]]);
 
 		const startX = x * pixelSize;
 		const startY = y * pixelSize;
 
 		currentEditor.board[x][y] = currentEditor.colorToId[ctx.fillStyle];
 
-		const type = drawingMode ? 'fill' : 'clear';
+		const type = drawingMode === 0 ? 'fill' : 'clear';
 
 		ctx[`${type}Rect`](
 			startX - spacing,

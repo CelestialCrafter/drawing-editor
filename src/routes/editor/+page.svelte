@@ -1,5 +1,12 @@
 <script>
-	import { Pencil, EyeDropper, ArrowDownOnSquare, ArrowUpOnSquare, Trash } from 'svelte-heros-v2';
+	import {
+		NoSymbol,
+		Pencil,
+		EyeDropper,
+		ArrowDownOnSquare,
+		ArrowUpOnSquare,
+		Trash
+	} from 'svelte-heros-v2';
 	import Editor from './Editor.svelte';
 
 	let color;
@@ -30,16 +37,22 @@
 				</button>
 				<!-- eslint-enable no-alert -->
 				<button
-					class="editor-button bg-white {drawingMode ? 'bg-cyan-400' : 'hover:bg-purple-400'}"
-					on:click={() => (drawingMode = !drawingMode)}
+					class="editor-button bg-white hover:bg-purple-400"
+					on:click={() => (drawingMode === 2 ? (drawingMode = 0) : drawingMode++)}
 				>
-					<Pencil size="30" />
+					{#if drawingMode === 0}
+						<Pencil size="30" />
+					{:else if drawingMode === 1}
+						<NoSymbol size="30" />
+					{:else}
+						<EyeDropper size="30" />
+					{/if}
 				</button>
 
 				<button
 					class="editor-button mt-auto bg-white
-				transition-all duration-300
-				hover:border-4 hover:bg-red-400 hover:text-white"
+					transition-all duration-300
+					hover:border-4 hover:bg-red-400 hover:text-white"
 					on:click={editor.clearCanvas}
 				>
 					<Trash size="30" />
