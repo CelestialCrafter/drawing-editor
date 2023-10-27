@@ -105,8 +105,10 @@
 		if (!painting) return;
 		const x = getBoardPosition(offsetX);
 		const y = getBoardPosition(offsetY);
-		if (drawingMode === 2)
-			return (color.value = currentEditor.idToColor[currentEditor.board[x][y]]);
+		const currentPixel = currentEditor.board[x][y];
+
+		if (drawingMode === 2 && currentPixel !== 'clear')
+			return (color.value = currentEditor.idToColor[currentPixel]);
 
 		const startX = x * pixelSize;
 		const startY = y * pixelSize;
