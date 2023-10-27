@@ -4,6 +4,7 @@
 
 	let color;
 	let editor;
+	let drawingMode;
 </script>
 
 <main class="flex h-screen w-screen flex-row items-center justify-center">
@@ -12,39 +13,42 @@
 		<div id="controls" class="flex w-fit flex-col gap-3 rounded-2xl bg-white/30 p-3 shadow-2xl">
 			<input type="color" id="color" bind:this={color} class="m-0 aspect-square h-[5vw] w-[5vw]" />
 
-			<!-- eslint-disable no-alert -->
-			<button
-				class="editor-button bg-white hover:bg-purple-400"
-				on:click={() =>
-					editor.importEditor(prompt('Input your Editor Code')) && editor.paintEditor()}
-			>
-				<ArrowDownOnSquare size="30" />
-			</button>
-			<button
-				class="editor-button bg-white hover:bg-purple-400"
-				on:click={() => alert(`Editor Code:\n${editor.exportEditor()}`)}
-			>
-				<ArrowUpOnSquare size="30" />
-			</button>
-			<!-- eslint-enable no-alert -->
-			<button
-				class="editor-button bg-white {editor.drawingMode ? 'bg-cyan-400' : 'hover:bg-purple-400'}"
-				on:click={() => (editor.drawingMode = !editor.drawingMode)}
-			>
-				<Pencil size="30" />
-			</button>
+			{#if editor}
+				<!-- eslint-disable no-alert -->
+				<button
+					class="editor-button bg-white hover:bg-purple-400"
+					on:click={() =>
+						editor.importEditor(prompt('Input your Editor Code')) && editor.paintEditor()}
+				>
+					<ArrowDownOnSquare size="30" />
+				</button>
+				<button
+					class="editor-button bg-white hover:bg-purple-400"
+					on:click={() => alert(`Editor Code:\n${editor.exportEditor()}`)}
+				>
+					<ArrowUpOnSquare size="30" />
+				</button>
+				<!-- eslint-enable no-alert -->
+				<button
+					class="editor-button bg-white {drawingMode ? 'bg-cyan-400' : 'hover:bg-purple-400'}"
+					on:click={() => (drawingMode = !drawingMode)}
+				>
+					<Pencil size="30" />
+				</button>
 
-			<button
-				class="editor-button mt-auto bg-white
+				<button
+					class="editor-button mt-auto bg-white
 				transition-all duration-300
 				hover:border-4 hover:bg-red-400 hover:text-white"
-				on:click={editor.clearCanvas}
-			>
-				<Trash size="30" />
-			</button>
+					on:click={editor.clearCanvas}
+				>
+					<Trash size="30" />
+				</button>
+			{/if}
 		</div>
 		<Editor
 			bind:this={editor}
+			bind:drawingMode
 			{color}
 			class="aspect-square h-[vh] w-[40vw] rounded-2xl bg-white shadow-2xl"
 		/>
