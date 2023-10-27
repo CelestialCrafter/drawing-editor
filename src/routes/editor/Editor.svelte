@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import { LZMA as lzma } from 'lzma/src/lzma_worker-min';
+	import { draw } from 'svelte/transition';
 
 	export let canvas;
 	export let color;
@@ -81,7 +82,7 @@
 	const activatePainting = () => {
 		painting = true;
 		const selectedColor = color.value;
-		ctx.fillStyle = drawingMode ? selectedColor : 'clear';
+		ctx.fillStyle = selectedColor;
 
 		if (!currentEditor.colorToId[selectedColor]) {
 			let previousId = Object.keys(currentEditor.idToColor);
@@ -110,8 +111,7 @@
 
 		currentEditor.board[x][y] = currentEditor.colorToId[ctx.fillStyle];
 
-		let type = 'fill';
-		if (ctx.fillStyle === 'clear') type = ctx.fillStyle;
+		const type = drawingMode ? 'fill' : 'clear';
 
 		ctx[`${type}Rect`](
 			startX - spacing,
