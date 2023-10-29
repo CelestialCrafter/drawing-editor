@@ -40,6 +40,8 @@
 	export let currentEditor = generateEditor();
 
 	let pixelSize;
+	let verticalPixelSize;
+	let horizontalPixelSize;
 	let painting = false;
 	let ctx;
 
@@ -65,8 +67,8 @@
 				ctx[`${type}Rect`](
 					calculatePixelPosition(i, j, 'horizontal'),
 					calculatePixelPosition(j, i, 'vertical'),
-					pixelSize * horizontalMultiplier - spacing * 2,
-					pixelSize * verticalMultiplier - spacing * 2
+					horizontalPixelSize - spacing * 2,
+					verticalPixelSize - spacing * 2
 				);
 			}
 		}
@@ -109,26 +111,27 @@
 		autoSave();
 	};
 
-	const getBoardPosition = pos => (pos - (pos % pixelSize)) / pixelSize;
+	const getBoardPosition = (pos, multiplier) =>
+		(pos - (pos % (pixelSize * multiplier))) / (pixelSize * multiplier);
 
 	const paint = ({ offsetX, offsetY }) => {
 		if (!painting) return;
-		const x = getBoardPosition(offsetX);
-		const y = getBoardPosition(offsetY);
+		const x = getBoardPosition(offsetX, horizontalMultiplier);
+		const y = getBoardPosition(offsetY, verticalMultiplier);
 		const currentPixel = currentEditor.board[x][y];
 
 		if (drawingMode === 2 && currentPixel !== 'clear')
 			return (color.value = currentEditor.idToColor[currentPixel]);
 
-		currentEditor.board[x][y] = currentEditor.colorToId[ctx.fillStyle];
+		currentEditor.board[x][y - (x % 2)] = currentEditor.colorToId[ctx.fillStyle];
 
 		const type = drawingMode === 0 ? 'fill' : 'clear';
 
 		ctx[`${type}Rect`](
-			x * pixelSize - spacing,
-			(y + (x % 2)) * pixelSize - spacing,
-			pixelSize * horizontalMultiplier - spacing * 2,
-			pixelSize * verticalMultiplier - spacing * 2
+			x * horizontalPixelSize - spacing,
+			y * verticalPixelSize - spacing,
+			horizontalPixelSize - spacing * 2,
+			verticalPixelSize - spacing * 2
 		);
 	};
 
@@ -146,6 +149,8 @@
 		canvas.width = canvas.offsetWidth;
 		canvas.height = canvas.offsetHeight;
 		pixelSize = canvas.width / currentEditor.board.length;
+		verticalPixelSize = pixelSize * verticalMultiplier;
+		horizontalPixelSize = pixelSize * horizontalMultiplier;
 
 		const editorAutoSave = localStorage.getItem('editorAutoSave');
 		if (editorAutoSave) currentEditor = importEditor(editorAutoSave);
