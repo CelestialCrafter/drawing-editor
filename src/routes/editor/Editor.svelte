@@ -14,9 +14,9 @@
 		const editor = {
 			idToColor: {
 				0: 'clear',
-				1: '#E9BCD1',
-				2: '#34E2E2',
-				3: '#FFFFFF'
+				1: '#FFF',
+				2: '#FFF',
+				3: '#FFF'
 			},
 			board: Array(size)
 				.fill(null)

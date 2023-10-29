@@ -80,7 +80,10 @@
 			@apply border-none;
 		}
 	}
+	.editor-button:active {
+		@apply scale-90;
+	}
 	.editor-button {
-		@apply flex aspect-square h-[5vw] w-[5vw] items-center justify-center rounded-2xl border-gray-100 shadow-lg;
+		@apply flex aspect-square h-[5vw] w-[5vw] items-center justify-center rounded-2xl border-gray-100 shadow-lg transition-all;
 	}
 </style>
