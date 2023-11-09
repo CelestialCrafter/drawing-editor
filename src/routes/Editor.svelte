@@ -1,6 +1,5 @@
 <script>
 	import { onMount } from 'svelte';
-	import { LZMA as lzma } from 'lzma/src/lzma_worker-min';
 
 	export let canvas;
 	export let color;
@@ -82,9 +81,8 @@
 		};
 	};
 
-	export const exportEditor = () => JSON.stringify(lzma.compress(JSON.stringify(currentEditor), 6));
-	export const importEditor = compressed =>
-		(currentEditor = JSON.parse(lzma.decompress(JSON.parse(compressed))));
+	export const exportEditor = () => JSON.stringify(currentEditor);
+	export const importEditor = compressed => (currentEditor = JSON.parse(compressed));
 
 	const autoSave = debounce(
 		() => localStorage.setItem('editorAutoSave', exportEditor(currentEditor)),
@@ -149,7 +147,7 @@
 		canvas.width = canvas.offsetWidth;
 		canvas.height = canvas.offsetHeight;
 		pixelSize = canvas.width / currentEditor.board.length;
-		console.log(pixelSize)
+		console.log(pixelSize);
 		verticalPixelSize = pixelSize * verticalMultiplier;
 		horizontalPixelSize = pixelSize * horizontalMultiplier;
 
