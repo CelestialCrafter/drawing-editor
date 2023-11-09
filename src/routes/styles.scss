@@ -2,14 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono+Bold:wght@800&display=swap');
-
 @layer base {
 	body {
 		@apply overflow-hidden;
 		font-family: 'JetBrains Mono', monospace;
 		font-weight: 800;
 	}
+
 	main {
 		@apply h-screen w-screen;
 	}

@@ -6,7 +6,7 @@
 	export let drawingMode = 0;
 	export let spacing = 0;
 
-	export let axisMultiplier = 1;
+	export let axisMultiplier = 1.5;
 	export let axis = 'vertical';
 
 	const horizontalMultiplier = Math.max((axis === 'horizontal') * axisMultiplier, 1);
@@ -38,7 +38,7 @@
 
 	export let currentEditor = generateEditor();
 
-	export let pixelSize;
+	let pixelSize;
 	let verticalPixelSize;
 	let horizontalPixelSize;
 	let painting = false;
@@ -147,7 +147,6 @@
 		canvas.width = canvas.offsetWidth;
 		canvas.height = canvas.offsetHeight;
 		pixelSize = canvas.width / currentEditor.board.length;
-		console.log(pixelSize);
 		verticalPixelSize = pixelSize * verticalMultiplier;
 		horizontalPixelSize = pixelSize * horizontalMultiplier;
 
